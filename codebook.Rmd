@@ -1,0 +1,120 @@
+---
+title: "Codebook"
+author: "RDHeller"
+date: "Sunday, July 27, 2014"
+output: html_document
+---
+  
+  
+  
+  
+All the data, including the activity and feature names came from a zip file 
+downloaded from: 
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+The analysis required the following libraries to complete the work:
+
+        library(plyr)
+        library(reshape)
+        library(reshape2)
+
+
+The files contained two sets of variables critical to this program: 
+
+        1. Activities.txt 
+        2. Features.txt
+
+ACTIVITY
+
+The Activities originated in the on-line file: activities.txt and consisted of
+6 variables:
+
+  V1                 V2
+1  1            WALKING
+2  2   WALKING_UPSTAIRS
+3  3 WALKING_DOWNSTAIRS
+4  4            SITTING
+5  5           STANDING
+6  6             LAYING
+
+The activities were coded in the data sets with the values in column V1.  Although
+I didn't change any of the values in the data sets, I did replace the values in
+the main data sets with the names to make the final output more understandable.
+The code for this tranlation was: (ref. lines 78 and 79 in 'run_analysis.R')
+
+        Rows <- c(WALKING=1, WALKING_UPSTAIRS=2,WALKING_DOWNSTAIRS=3, SITTING=4, STANDING=5,         LAYING=6)
+        alldata$V1 <- names(Rows)[match(alldata$V1,Rows)]
+
+
+FEATURES
+
+There were 561 measurements identified in the features column. (see lines 23, 24)  
+
+        featurestxt <- read.table("./data/Proj/UCI HAR Dataset/features.txt")
+        activitytxt <- read.table("./data/Proj/UCI HAR Dataset/activity_labels.txt")
+
+Most of these didn't relate to the requirements for this project, so it was 
+important to eliminate all the measurements and features not applicable to this work.
+We were only interested in the values having the word "mean" in their names, or
+the word "std" (representing 'standard deviation').  I accomplished this with the
+code: (see lines 52,53)  
+        
+        meancols <- grep("mean", featurestxt$V2)
+        stdcols <- grep("std", featurestxt$V2)
+
+This gave me the row numbers in the features text that identified the mean and std
+data, but not the names.  To get the names, I had to take the next step of extracting
+them from the featurestxt file. (see lines 89,90)
+
+        meandataname <- featurestxt[meancols, ]
+        stddataname <- featurestxt[stdcols, ]
+
+Combining these into one file, 'vardatanames' gave me the final list:
+
+ [1] tBodyAcc-mean()-X               tBodyAcc-mean()-Y              
+ [3] tBodyAcc-mean()-Z               tGravityAcc-mean()-X           
+ [5] tGravityAcc-mean()-Y            tGravityAcc-mean()-Z           
+ [7] tBodyAccJerk-mean()-X           tBodyAccJerk-mean()-Y          
+ [9] tBodyAccJerk-mean()-Z           tBodyGyro-mean()-X             
+[11] tBodyGyro-mean()-Y              tBodyGyro-mean()-Z             
+[13] tBodyGyroJerk-mean()-X          tBodyGyroJerk-mean()-Y         
+[15] tBodyGyroJerk-mean()-Z          tBodyAccMag-mean()             
+[17] tGravityAccMag-mean()           tBodyAccJerkMag-mean()         
+[19] tBodyGyroMag-mean()             tBodyGyroJerkMag-mean()        
+[21] fBodyAcc-mean()-X               fBodyAcc-mean()-Y              
+[23] fBodyAcc-mean()-Z               fBodyAcc-meanFreq()-X          
+[25] fBodyAcc-meanFreq()-Y           fBodyAcc-meanFreq()-Z          
+[27] fBodyAccJerk-mean()-X           fBodyAccJerk-mean()-Y          
+[29] fBodyAccJerk-mean()-Z           fBodyAccJerk-meanFreq()-X      
+[31] fBodyAccJerk-meanFreq()-Y       fBodyAccJerk-meanFreq()-Z      
+[33] fBodyGyro-mean()-X              fBodyGyro-mean()-Y             
+[35] fBodyGyro-mean()-Z              fBodyGyro-meanFreq()-X         
+[37] fBodyGyro-meanFreq()-Y          fBodyGyro-meanFreq()-Z         
+[39] fBodyAccMag-mean()              fBodyAccMag-meanFreq()         
+[41] fBodyBodyAccJerkMag-mean()      fBodyBodyAccJerkMag-meanFreq() 
+[43] fBodyBodyGyroMag-mean()         fBodyBodyGyroMag-meanFreq()    
+[45] fBodyBodyGyroJerkMag-mean()     fBodyBodyGyroJerkMag-meanFreq()
+[47] tBodyAcc-std()-X                tBodyAcc-std()-Y               
+[49] tBodyAcc-std()-Z                tGravityAcc-std()-X            
+[51] tGravityAcc-std()-Y             tGravityAcc-std()-Z            
+[53] tBodyAccJerk-std()-X            tBodyAccJerk-std()-Y           
+[55] tBodyAccJerk-std()-Z            tBodyGyro-std()-X              
+[57] tBodyGyro-std()-Y               tBodyGyro-std()-Z              
+[59] tBodyGyroJerk-std()-X           tBodyGyroJerk-std()-Y          
+[61] tBodyGyroJerk-std()-Z           tBodyAccMag-std()              
+[63] tGravityAccMag-std()            tBodyAccJerkMag-std()          
+[65] tBodyGyroMag-std()              tBodyGyroJerkMag-std()         
+[67] fBodyAcc-std()-X                fBodyAcc-std()-Y               
+[69] fBodyAcc-std()-Z                fBodyAccJerk-std()-X           
+[71] fBodyAccJerk-std()-Y            fBodyAccJerk-std()-Z           
+[73] fBodyGyro-std()-X               fBodyGyro-std()-Y              
+[75] fBodyGyro-std()-Z               fBodyAccMag-std()              
+[77] fBodyBodyAccJerkMag-std()       fBodyBodyGyroMag-std()         
+[79] fBodyBodyGyroJerkMag-std()     
+
+I used these names as the column names in my tidy data set.
+
+
+        
+

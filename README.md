@@ -1,7 +1,5 @@
-GettingNCleaningData
-====================
-
-Getting and Cleaning Data - Coursera
+Datacleanup
+=========== For project in the Data Cleanup Coursera
 
 
 run_analysis.R discussion:
